@@ -1,0 +1,67 @@
+package at.kaindorf.matura_lernen2.services.impl;
+
+import at.kaindorf.matura_lernen2.pojos.User;
+import at.kaindorf.matura_lernen2.services.JWTService;
+import com.sun.jdi.request.DuplicateRequestException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.security.Key;
+import java.time.Duration;
+import java.util.Base64;
+import java.util.Date;
+
+@Service
+@Slf4j
+public class JWTServiceImpl implements JWTService {
+    @Value("${app.verification-token.expiry-duration}")
+    private Duration expiresIn;
+    @Value("${token.signing.secret}")
+    private String secret;
+
+    @Override
+    public String generateToken(UserDetails userDetails) {
+        return Jwts.builder()
+                .subject(userDetails.getUsername())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expiresIn.toMillis()))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    @Override
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        Claims claims = extractClaims(token);
+        String username = userDetails.getUsername();
+        Date actualDate = new Date();
+        return username.equals(claims.getSubject()) && actualDate.before(claims.getExpiration());
+    }
+
+    // Claims ist quasi HashMap - Meine Claims stehen da drin als Key-Value-Paare
+    private Claims extractClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build() // baut den Parser
+                .parseSignedClaims(token)
+                .getPayload(); // holt die Claims raus
+    }
+
+    @Override
+    public String extractUsername(String token) {
+        return extractClaims(token).getSubject();
+    }
+
+    private SecretKey getSigningKey() {
+        byte [] keyBytes = Base64.getDecoder().decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+}
