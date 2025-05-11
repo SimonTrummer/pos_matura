@@ -6,9 +6,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableWebMvc // braucht man bei Webconfig halt
-// Copilot: @EnableWebMvc aktiviert die Standardkonfiguration von Spring MVC.
-// kann man dann implementieren und anpassen
+@EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {

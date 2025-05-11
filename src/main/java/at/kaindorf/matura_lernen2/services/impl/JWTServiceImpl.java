@@ -1,6 +1,7 @@
 package at.kaindorf.matura_lernen2.services.impl;
 
 import at.kaindorf.matura_lernen2.services.JWTService;
+import ch.qos.logback.core.util.SystemInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -17,18 +18,19 @@ import java.util.Date;
 @Service
 @Slf4j
 public class JWTServiceImpl implements JWTService {
-    @Value("${app.verification-token.expiry-duration}")
-    private Duration expiresIn;
     @Value("${token.signing.secret}")
     private String secret;
+    @Value("${app.verification-token.expiry-duration}")
+    private Duration duration;
 
     @Override
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
-                .subject(userDetails.getUsername())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expiresIn.toMillis()))
+                .subject(userDetails.getUsername())
+                .expiration(new Date(System.currentTimeMillis() + duration.toMillis()))
                 .signWith(getSigningKey())
+                .claim("jwt","true")
                 .compact();
     }
 
