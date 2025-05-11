@@ -1,21 +1,15 @@
 package at.kaindorf.matura_lernen2.services.impl;
 
-import at.kaindorf.matura_lernen2.pojos.User;
 import at.kaindorf.matura_lernen2.services.JWTService;
-import com.sun.jdi.request.DuplicateRequestException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
