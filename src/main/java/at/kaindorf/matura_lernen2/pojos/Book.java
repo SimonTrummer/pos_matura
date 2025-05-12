@@ -4,16 +4,17 @@ import at.kaindorf.matura_lernen2.xml.XmlLocalDateParser;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,24 +23,21 @@ import java.util.List;
 @Builder
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Loan
-{
+public class Book {
     @Id
     @GeneratedValue
     @JsonIgnore
-    private Integer loanId;
-    @XmlJavaTypeAdapter(XmlLocalDateParser.class)
-    private LocalDate loanDate;
-    @XmlJavaTypeAdapter(XmlLocalDateParser.class)
-    private LocalDate returnDate;
+    private Integer bookId;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinColumn(name = "bookId")
-    @JsonManagedReference
-    private Book book;
+    private String title;
+    private String author;
+    @XmlJavaTypeAdapter(XmlLocalDateParser.class)
+    private LocalDate published;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinColumn(name = "userId")
-    @JsonManagedReference
-    private User user;
+    @OneToMany(mappedBy = "book")
+    @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Loan> loans= new ArrayList<>();
+
 }
