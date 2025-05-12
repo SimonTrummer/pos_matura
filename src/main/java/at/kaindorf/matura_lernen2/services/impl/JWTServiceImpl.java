@@ -1,5 +1,6 @@
 package at.kaindorf.matura_lernen2.services.impl;
 
+import at.kaindorf.matura_lernen2.pojos.TokenType;
 import at.kaindorf.matura_lernen2.services.JWTService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,21 +24,23 @@ public class JWTServiceImpl implements JWTService {
     private String secret;
 
     @Override
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails,TokenType tokenType) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date())
+                .claim("type",tokenType.name())
                 .expiration(new Date(System.currentTimeMillis() + expiresIn.toMillis()))
                 .signWith(getSigningKey())
                 .compact();
     }
 
     @Override
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails, TokenType tokenType) {
         Claims claims = extractClaims(token);
         String username = userDetails.getUsername();
         Date actualDate = new Date();
-        return username.equals(claims.getSubject()) && actualDate.before(claims.getExpiration());
+
+        return username.equals(claims.getSubject()) && actualDate.before(claims.getExpiration()) && claims.get("type").equals(tokenType.name());
     }
 
     // Claims ist quasi HashMap - Meine Claims stehen da drin als Key-Value-Paare
