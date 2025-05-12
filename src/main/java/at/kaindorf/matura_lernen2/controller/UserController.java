@@ -1,15 +1,14 @@
 package at.kaindorf.matura_lernen2.controller;
 
 import at.kaindorf.matura_lernen2.pojos.Account;
+import at.kaindorf.matura_lernen2.pojos.Address;
 import at.kaindorf.matura_lernen2.pojos.Customer;
 import at.kaindorf.matura_lernen2.repositories.AccountRepository;
 import at.kaindorf.matura_lernen2.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +25,7 @@ import java.util.Set;
 @Slf4j
 public class UserController {
     private final AccountRepository accountRepository;
+    private final CustomerRepository customerRepository;
 
     @GetMapping("/hello")
     public ResponseEntity<String> hello () {
@@ -47,4 +47,14 @@ public class UserController {
 
         return ResponseEntity.ok(accounts);
     }
+
+    @GetMapping("/customersFromCity")
+    public ResponseEntity<List<Customer>> customersFromCity(@RequestParam String city) {
+        ExampleMatcher matcher = ExampleMatcher.matching().withMatcher("lastname", ExampleMatcher.GenericPropertyMatcher::startsWith);
+        Example<Customer> customerExample = Example.of(Customer.builder().lastname("B").address(Address.builder().city(city).build()).build(),matcher);
+
+        return ResponseEntity.ok(customerRepository.findAll(customerExample));
+
+    }
+
 }
