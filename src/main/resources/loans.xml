@@ -1,0 +1,41 @@
+<loans>
+    <loan>
+        <loanDate>2024-04-01</loanDate>
+        <returnDate>2024-04-15</returnDate>
+        <book>
+            <title>Clean Code</title>
+            <author>Robert C. Martin</author>
+            <published>2008-08-01</published>
+        </book>
+        <user>
+            <name>Max Mustermann</name>
+            <email>max@example.com</email>
+        </user>
+    </loan>
+    <loan>
+        <loanDate>2024-04-02</loanDate>
+        <returnDate>2024-04-19</returnDate>
+        <book>
+            <title>Clean Code</title>
+            <author>Robert C. Martin</author>
+            <published>2008-08-01</published>
+        </book>
+        <user>
+            <name>Max Mustermann</name>
+            <email>max@example.com</email>
+        </user>
+    </loan>
+    <loan>
+        <loanDate>2024-04-05</loanDate>
+        <returnDate>2024-04-20</returnDate>
+        <book>
+            <title>Effective Java</title>
+            <author>Joshua Bloch</author>
+            <published>2018-01-06</published>
+        </book>
+        <user>
+            <name>Erika Musterfrau</name>
+            <email>erika@example.com</email>
+        </user>
+    </loan>
+</loans>
